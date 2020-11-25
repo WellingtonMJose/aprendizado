@@ -5,7 +5,6 @@
  */
 package br.com.logisticawmj.wmj.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,6 @@ public class Categoria implements Serializable {
 
     private String name;
     
-    @JsonManagedReference
     @ManyToMany(mappedBy = "listCategorias")
 
     private List<Produto> listProdutos = new ArrayList<>();
