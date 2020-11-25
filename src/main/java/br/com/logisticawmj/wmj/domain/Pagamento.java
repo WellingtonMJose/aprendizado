@@ -5,44 +5,44 @@
  */
 package br.com.logisticawmj.wmj.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import br.com.logisticawmj.wmj.domain.enums.EstadoPagamento;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 
 /**
  *
- * @author wellington
+ * @author desenv-01
  */
 @Entity
-public class Cidade implements Serializable {
+@Inheritance(strategy=InheritanceType.JOINED)
+public abstract class Pagamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;
+    private Integer estado;
     
-    @JsonManagedReference
-    @ManyToOne
-    @JoinColumn(name = "estado_Id")
-    private Estado estado;
+    @OneToOne
+    @JoinColumn(name="pedido_id")
+    @MapsId
+    private Pedido pedido;
     
-    public Cidade(){
+    public Pagamento(){
         
     }
 
-    public Cidade(Integer id, String nome, Estado estado) {
-        super();
+    public Pagamento(Integer id, EstadoPagamento estado, Pedido pedido) {
         this.id = id;
-        this.nome = nome;
-        this.estado = estado;
+        this.estado = estado.getCod();
+        this.pedido = pedido;
     }
 
     public Integer getId() {
@@ -53,26 +53,26 @@ public class Cidade implements Serializable {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public EstadoPagamento getEstado() {
+        return EstadoPagamento.toEnum(estado);
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setEstado(EstadoPagamento estado) {
+        this.estado = estado.getCod();
     }
 
-    public Estado getEstado() {
-        return estado;
+    public Pedido getPedido() {
+        return pedido;
     }
 
-    public void setEstado(Estado estado) {
-        this.estado = estado;
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -87,13 +87,11 @@ public class Cidade implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Cidade other = (Cidade) obj;
+        final Pagamento other = (Pagamento) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
-    
-    
     
 }

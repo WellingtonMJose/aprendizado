@@ -5,14 +5,24 @@ import br.com.logisticawmj.wmj.domain.Cidade;
 import br.com.logisticawmj.wmj.domain.Cliente;
 import br.com.logisticawmj.wmj.domain.Endereco;
 import br.com.logisticawmj.wmj.domain.Estado;
+import br.com.logisticawmj.wmj.domain.ItemPedido;
+import br.com.logisticawmj.wmj.domain.Pagamento;
+import br.com.logisticawmj.wmj.domain.PagamentoComBoleto;
+import br.com.logisticawmj.wmj.domain.PagamentoComCartao;
+import br.com.logisticawmj.wmj.domain.Pedido;
 import br.com.logisticawmj.wmj.domain.Produto;
+import br.com.logisticawmj.wmj.domain.enums.EstadoPagamento;
 import br.com.logisticawmj.wmj.domain.enums.TipoCliente;
 import br.com.logisticawmj.wmj.repositorios.CategoriaRepositorio;
 import br.com.logisticawmj.wmj.repositorios.CidadeRepositorio;
 import br.com.logisticawmj.wmj.repositorios.ClienteRepositorio;
 import br.com.logisticawmj.wmj.repositorios.EnderecoRepositorio;
 import br.com.logisticawmj.wmj.repositorios.EstadoRepositorio;
+import br.com.logisticawmj.wmj.repositorios.ItemPedidoRepositorio;
+import br.com.logisticawmj.wmj.repositorios.PagamentoRepositorio;
+import br.com.logisticawmj.wmj.repositorios.PedidoRepositorio;
 import br.com.logisticawmj.wmj.repositorios.ProdutoRepositorio;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -39,6 +49,15 @@ public class WmjApplication implements CommandLineRunner{
     
     @Autowired
     private EnderecoRepositorio enderecoRepositorio;
+    
+    @Autowired
+    private PedidoRepositorio pedidoRepositorio;
+    
+    @Autowired
+    private PagamentoRepositorio pagamentoRepositorio;
+    
+    @Autowired
+    private ItemPedidoRepositorio itemPedidoRepositorio;
     
 	public static void main(String[] args) {
 		SpringApplication.run(WmjApplication.class, args);
@@ -93,6 +112,39 @@ public class WmjApplication implements CommandLineRunner{
         
         clienteRepositorio.saveAll(Arrays.asList(cli1));
         enderecoRepositorio.saveAll(Arrays.asList(e1,e2));
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        
+        Pedido ped1 = new Pedido(null, sdf.parse("30/09/2020 19:50"), cli1, e2);
+        Pedido ped2 = new Pedido(null, sdf.parse("10/11/2020 09:33"), cli1, e1);
+        
+        Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+        ped1.setPagamento(pagto1);
+        
+        Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/11/2020 00:10"), null);
+        ped2.setPagamento(pagto2);
+        
+        
+        cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+        
+        pedidoRepositorio.saveAll(Arrays.asList(ped1, ped2));
+        pagamentoRepositorio.saveAll(Arrays.asList(pagto1, pagto2));
+        
+        ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+        ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+        ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+        
+        ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+        ped2.getItens().addAll(Arrays.asList(ip3));
+        
+        p1.getItens().addAll(Arrays.asList(ip1));
+        p2.getItens().addAll(Arrays.asList(ip3));
+        p3.getItens().addAll(Arrays.asList(ip2));
+        
+        itemPedidoRepositorio.saveAll(Arrays.asList(ip1, ip2, ip3));
+        
+        
+        
         
     }
 
