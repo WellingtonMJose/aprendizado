@@ -67,6 +67,12 @@ public class WmjApplication implements CommandLineRunner{
     public void run(String... args) throws Exception {
         Categoria cat1 = new Categoria(null, "TI");
         Categoria cat2 = new Categoria(null, "Escritorio");
+        Categoria cat3 = new Categoria(null, "Cama mesa e banho");
+        Categoria cat4 = new Categoria(null, "Eletrônicos");
+        Categoria cat5 = new Categoria(null, "Jardinagem");
+        Categoria cat6 = new Categoria(null, "Automotivo");
+        Categoria cat7 = new Categoria(null, "Cereais");
+        Categoria cat8 = new Categoria(null, "Açougue");
         
         Produto p1 = new Produto(null, "Computador", 2000.0);
         Produto p2 = new Produto(null, "Mesa", 800.0);
@@ -83,7 +89,7 @@ public class WmjApplication implements CommandLineRunner{
         p4.getListCategorias().addAll(Arrays.asList(cat1,cat2));
         p5.getListCategorias().addAll(Arrays.asList(cat1));   
         
-        categoriaRepositorio.saveAll(Arrays.asList(cat1,cat2)); 
+        categoriaRepositorio.saveAll(Arrays.asList(cat1,cat2, cat3, cat4, cat5, cat6, cat7, cat8)); 
         produtoRepositorio.saveAll(Arrays.asList(p1,p2,p3,p4,p5));
         
              
