@@ -30,7 +30,7 @@ public class Categoria implements Serializable {
 
     private String nome;
     
-    @ManyToMany(mappedBy = "listCategorias")
+    @ManyToMany(mappedBy = "categorias")
 
     private List<Produto> listProdutos = new ArrayList<>();
 

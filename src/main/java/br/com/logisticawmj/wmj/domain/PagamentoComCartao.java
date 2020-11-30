@@ -6,6 +6,7 @@
 package br.com.logisticawmj.wmj.domain;
 
 import br.com.logisticawmj.wmj.domain.enums.EstadoPagamento;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import javax.persistence.Entity;
 
 /**
@@ -13,6 +14,7 @@ import javax.persistence.Entity;
  * @author desenv-01
  */
 @Entity
+@JsonTypeName("pagamentoComCartao")
 public class PagamentoComCartao extends Pagamento{
     
     private static final long serialVersionUID = 1L;

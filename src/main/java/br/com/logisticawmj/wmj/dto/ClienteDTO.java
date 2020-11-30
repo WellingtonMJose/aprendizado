@@ -7,6 +7,7 @@ package br.com.logisticawmj.wmj.dto;
 
 import java.io.Serializable;
 import br.com.logisticawmj.wmj.domain.Cliente;
+import br.com.logisticawmj.wmj.services.validation.ClienteUpdate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
@@ -15,6 +16,8 @@ import org.hibernate.validator.constraints.Length;
  *
  * @author desenv-01
  */
+
+@ClienteUpdate
 public class ClienteDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
