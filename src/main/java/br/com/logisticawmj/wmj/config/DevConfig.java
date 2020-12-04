@@ -6,6 +6,8 @@
 package br.com.logisticawmj.wmj.config;
 
 import br.com.logisticawmj.wmj.services.DBService;
+import br.com.logisticawmj.wmj.services.EmailService;
+import br.com.logisticawmj.wmj.services.SmtpEmailService;
 import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,8 @@ public class DevConfig {
     
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String strategy;
+    
+    
 
     @Bean
     public boolean instantiateDatabase() throws ParseException {
@@ -34,6 +38,11 @@ public class DevConfig {
         }
         dbService.instantiateTestDatabase();
         return true;
+    }
+    
+    @Bean
+    public EmailService emailService(){
+        return new SmtpEmailService();
     }
 
 }
