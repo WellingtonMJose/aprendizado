@@ -5,9 +5,12 @@
  */
 package br.com.logisticawmj.wmj.services;
 
-import br.com.logisticawmj.wmj.domain.Pedido;
 import javax.mail.internet.MimeMessage;
+
 import org.springframework.mail.SimpleMailMessage;
+
+import br.com.logisticawmj.wmj.domain.Cliente;
+import br.com.logisticawmj.wmj.domain.Pedido;
 
 /**
  *
@@ -22,4 +25,7 @@ public interface EmailService {
     void sendOrderConfirmationHtmlEmail(Pedido obj);
 
     void sendHtmlEmail(MimeMessage msg);
+    
+    void sendNewPasswordEmail(Cliente cliente, String newPass);
+
 }

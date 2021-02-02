@@ -7,7 +7,6 @@ package br.com.logisticawmj.wmj.config;
 
 import br.com.logisticawmj.wmj.services.DBService;
 import br.com.logisticawmj.wmj.services.EmailService;
-import br.com.logisticawmj.wmj.services.MockEmailService;
 import br.com.logisticawmj.wmj.services.SmtpEmailService;
 import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,6 +5,17 @@
  */
 package br.com.logisticawmj.wmj.services;
 
+import java.util.Date;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import br.com.logisticawmj.wmj.domain.Cliente;
 import br.com.logisticawmj.wmj.domain.ItemPedido;
 import br.com.logisticawmj.wmj.domain.PagamentoComBoleto;
 import br.com.logisticawmj.wmj.domain.Pedido;
@@ -12,12 +23,9 @@ import br.com.logisticawmj.wmj.domain.enums.EstadoPagamento;
 import br.com.logisticawmj.wmj.repositorios.ItemPedidoRepositorio;
 import br.com.logisticawmj.wmj.repositorios.PagamentoRepositorio;
 import br.com.logisticawmj.wmj.repositorios.PedidoRepositorio;
+import br.com.logisticawmj.wmj.security.UserSS;
+import br.com.logisticawmj.wmj.services.exceptions.AuthorizationException;
 import br.com.logisticawmj.wmj.services.exceptions.ObjectNotFoundException;
-import java.util.Date;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -77,5 +85,15 @@ public class PedidoService {
         emailService.sendOrderConfirmationHtmlEmail(obj);
         return obj;
     }
+    
+    public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente =  clienteService.find(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
+	}
 
 }

@@ -5,7 +5,6 @@
  */
 package br.com.logisticawmj.wmj.services;
 
-import br.com.logisticawmj.wmj.domain.Pedido;
 import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -21,10 +21,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-/**
- *
- * @author wellington
- */
 @Entity
 public class Produto implements Serializable {
 

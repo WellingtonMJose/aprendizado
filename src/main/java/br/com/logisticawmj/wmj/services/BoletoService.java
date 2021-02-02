@@ -10,10 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 
-/**
- *
- * @author desenv-01
- */
+
 @Service
 public class BoletoService {
 

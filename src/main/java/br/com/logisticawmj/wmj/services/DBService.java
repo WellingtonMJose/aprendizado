@@ -17,6 +17,7 @@ import br.com.logisticawmj.wmj.domain.PagamentoComCartao;
 import br.com.logisticawmj.wmj.domain.Pedido;
 import br.com.logisticawmj.wmj.domain.Produto;
 import br.com.logisticawmj.wmj.domain.enums.EstadoPagamento;
+import br.com.logisticawmj.wmj.domain.enums.Perfil;
 import br.com.logisticawmj.wmj.domain.enums.TipoCliente;
 import br.com.logisticawmj.wmj.repositorios.CategoriaRepositorio;
 import br.com.logisticawmj.wmj.repositorios.CidadeRepositorio;
@@ -31,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,6 +41,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DBService {
+    
+    @Autowired
+    private BCryptPasswordEncoder pe;
 
     @Autowired
     private CategoriaRepositorio categoriaRepositorio;
@@ -132,21 +137,28 @@ public class DBService {
         estadoRepositorio.saveAll(Arrays.asList(est1, est2));
         cidadeRepositorio.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
 
-        Cliente cli1 = new Cliente(null, "Maria Silva", "wellingtonmoacirjose@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+        Cliente cli1 = new Cliente(null, "Maria Silva", "wellingtonmoacirjose@gmail.com", "36378912377", TipoCliente.PESSOAFISICA, pe.encode("123456"));
+        Cliente cli2 = new Cliente(null, "Joyce Oliveira", "ellen.polianabomfim@gmail.com", "19768420006", TipoCliente.PESSOAFISICA, pe.encode("123456"));
+        cli2.addPerfil(Perfil.ADMIN);
+        
         cli1.getTelefones().addAll(Arrays.asList("27363323", "993838931"));
+        cli2.getTelefones().addAll(Arrays.asList("24240100", "987689009"));
 
         Endereco e1 = new Endereco(null, "Rua Flores", "321", "Apto. 301", "Jardim", "3822034", cli1, c1);
         Endereco e2 = new Endereco(null, "Rua Campo de brito", "130", "Casa 1", "Pq. Maria Helena", "07261120", cli1, c5);
+        
+        Endereco e3 = new Endereco(null, "Rua Vitorino", "120", "Apto. 1407", "Centro", "07070120", cli2, c5);
 
         cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+        cli2.getEnderecos().addAll(Arrays.asList(e3));
 
-        clienteRepositorio.saveAll(Arrays.asList(cli1));
-        enderecoRepositorio.saveAll(Arrays.asList(e1, e2));
+        clienteRepositorio.saveAll(Arrays.asList(cli1, cli2));
+        enderecoRepositorio.saveAll(Arrays.asList(e1, e2, e3));
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         Pedido ped1 = new Pedido(null, sdf.parse("30/09/2020 19:50"), cli1, e2);
-        Pedido ped2 = new Pedido(null, sdf.parse("10/11/2020 09:33"), cli1, e1);
+        Pedido ped2 = new Pedido(null, sdf.parse("10/11/2020 09:33"), cli2, e3);
 
         Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
         ped1.setPagamento(pagto1);

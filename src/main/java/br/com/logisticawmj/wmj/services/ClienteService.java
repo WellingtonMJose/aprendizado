@@ -5,26 +5,31 @@
  */
 package br.com.logisticawmj.wmj.services;
 
-import br.com.logisticawmj.wmj.domain.Cidade;
-import br.com.logisticawmj.wmj.domain.Cliente;
-import br.com.logisticawmj.wmj.domain.Cliente;
-import br.com.logisticawmj.wmj.domain.Endereco;
-import br.com.logisticawmj.wmj.domain.enums.TipoCliente;
-import br.com.logisticawmj.wmj.dto.ClienteDTO;
-import br.com.logisticawmj.wmj.dto.ClienteNewDTO;
-import br.com.logisticawmj.wmj.repositorios.ClienteRepositorio;
-import br.com.logisticawmj.wmj.repositorios.EnderecoRepositorio;
-import br.com.logisticawmj.wmj.services.exceptions.DataIntegrityException;
-import br.com.logisticawmj.wmj.services.exceptions.ObjectNotFoundException;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.com.logisticawmj.wmj.domain.Cidade;
+import br.com.logisticawmj.wmj.domain.Cliente;
+import br.com.logisticawmj.wmj.domain.Endereco;
+import br.com.logisticawmj.wmj.domain.enums.Perfil;
+import br.com.logisticawmj.wmj.domain.enums.TipoCliente;
+import br.com.logisticawmj.wmj.dto.ClienteDTO;
+import br.com.logisticawmj.wmj.dto.ClienteNewDTO;
+import br.com.logisticawmj.wmj.repositorios.ClienteRepositorio;
+import br.com.logisticawmj.wmj.repositorios.EnderecoRepositorio;
+import br.com.logisticawmj.wmj.security.UserSS;
+import br.com.logisticawmj.wmj.services.exceptions.AuthorizationException;
+import br.com.logisticawmj.wmj.services.exceptions.DataIntegrityException;
+import br.com.logisticawmj.wmj.services.exceptions.ObjectNotFoundException;
 
 /**
  *
@@ -32,6 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class ClienteService {
+    
+    @Autowired
+    private BCryptPasswordEncoder pe;
 
     @Autowired
     private ClienteRepositorio repo;
@@ -40,6 +48,11 @@ public class ClienteService {
     private EnderecoRepositorio enderecoRepository;
 
     public Cliente find(Integer id) {
+    	
+    	UserSS user = UserService.authenticated();
+    	if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+    		throw new AuthorizationException("Acesso negado");
+    	}
         Optional<Cliente> obj = repo.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
@@ -79,7 +92,7 @@ public class ClienteService {
     }
 
     public Cliente fromDTO(ClienteDTO objDto) {
-        return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null);
+        return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
     }
 
     public Cliente fromDTO(ClienteNewDTO objDto) {
@@ -88,7 +101,8 @@ public class ClienteService {
                 objDto.getNome(),
                 objDto.getEmail(),
                 objDto.getCpfOuCnpj(),
-                TipoCliente.toEnum(objDto.getTipo()));
+                TipoCliente.toEnum(objDto.getTipo()),
+                pe.encode(objDto.getSenha()));
         Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
         Endereco end = new Endereco(
                 null,

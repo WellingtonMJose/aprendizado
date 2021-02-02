@@ -5,7 +5,6 @@
  */
 package br.com.logisticawmj.wmj.services;
 
-import br.com.logisticawmj.wmj.domain.Pedido;
 import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class SmtpEmailService extends AbstractEmailService {
 
     @Override
     public void sendEmail(SimpleMailMessage msg) {
-        LOG.info("Simulando envio de email ...");
+        LOG.info("Simulando envio de email ...");        
         mailSender.send(msg);
         LOG.info("Email enviado");
     }

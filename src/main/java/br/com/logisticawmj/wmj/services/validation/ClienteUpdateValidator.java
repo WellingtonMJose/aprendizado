@@ -6,9 +6,9 @@
 package br.com.logisticawmj.wmj.services.validation;
 
 import br.com.logisticawmj.wmj.domain.Cliente;
-import br.com.logisticawmj.wmj.domain.enums.TipoCliente;
+
 import br.com.logisticawmj.wmj.dto.ClienteDTO;
-import br.com.logisticawmj.wmj.dto.ClienteNewDTO;
+
 import br.com.logisticawmj.wmj.repositorios.ClienteRepositorio;
 import br.com.logisticawmj.wmj.resource.exception.FieldMessage;
 import java.util.ArrayList;

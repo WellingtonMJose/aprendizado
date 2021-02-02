@@ -14,10 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-/**
- *
- * @author wellington
- */
+
 @Entity
 public class Cidade implements Serializable {
 
